@@ -33,6 +33,7 @@ public class Main {
         task13();
         task14();
         task15();
+        task16();
     }
 
     private static void task1() throws IOException {
@@ -323,6 +324,34 @@ public class Main {
                 .sum();
 
         System.out.printf("The total cost of maintaining all plants: %.2f%n", plantMaintenanceCost);
+    }
+
+    private static void task16() throws IOException {
+        List<Car> cars = Util.getCars();
+
+        System.out.println("\nTask №16:");
+
+        Stream.concat(
+                cars.stream()
+                        .sorted(Comparator.comparing(Car::getPrice).reversed())
+                        .filter(car -> LocalDate.now().getYear() - car.getReleaseYear() < 20)
+                        .filter(car ->
+                                car.getMass() >= 2_000 &&
+                                car.getMass() <= 4_000
+                        )
+                        .limit(250),
+                cars.stream()
+                        .sorted(Comparator.comparing(Car::getPrice))
+                        .filter(car -> Arrays.asList("Black", "Blue", "Red", "White").contains(car.getColor()))
+                        .limit(100)
+            )
+            .collect(Collectors.groupingBy(Car::getCarMake, Collectors.counting()))
+            .entrySet()
+            .stream()
+            .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
+            .limit(5)
+            .map(Map.Entry::getKey)
+            .forEach(System.out::println);
     }
 
 }
